@@ -1,0 +1,77 @@
+./build/lib/pystow
+
+if target + a_dir + / + exists:
+   already exists
+else:
+    link
+
+
+?:
+list recursively -> hit-break
+
+
+
+for d in os.listdir(directory):
+    if os.path.isdir(d):
+       for d_ in os.listdir(directory + "/" + d):
+           if not os.path.exists(target + "/" + d_):
+
+
+dir)
+    recurse?
+
+file)
+    same file exists:
+         err
+    else:
+        link
+
+
+mydot/
+    emacs/
+        .emacs.d ----> ../.emacs.d
+    zsh/
+        .zshenv -----> ../.zshenv
+        .config/
+            .zshrc --> ../.config/zshrc
+
+
+
+#######################################
+
+for inside in os.listdir(directory):
+    # exclude hidden directories
+    if not inside[0] == ".":
+
+
+    def stow_link(s_directory, s_target):
+
+        if s_directory[0:3] == "./.":
+            return
+
+        for s_inside in os.listdir(s_directory):
+
+            if os.path.isdir(s_directory + "/" + s_inside):
+                # print(directory + "/" + inside, target)
+                stow_link(s_directory + "/" + s_inside, s_target)
+
+            elif os.path.isfile(s_directory + "/" + s_inside):
+                if not os.path.exists(s_target + "/" + s_inside):
+                    if simulate:
+                        print(
+                            "Will link "
+                            + s_directory + "/" + s_inside
+                            + " to " + s_target + "/"
+                        )
+                    else:
+                        # os.link()
+                        pass
+
+    if action == "stow":
+        stow_link(directory, target)
+    elif action == "delete":
+        pass
+    elif action == "restow":
+        pass
+        
+#######################################

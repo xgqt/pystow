@@ -25,15 +25,38 @@ def unlink(f):
         print(f, "is not a link")
 
 
-def stow(directory=".", target="..", action="stow", simulate=False):
+def stow(directory=".", target="..", action="stow", simulate=False, verbose=False):
 
-    print(directory)
-    print(target)
-    print(action)
-    print(simulate)
+    if verbose:
+        print(
+            "Options:",
+            "\n", "- Directory:", directory,
+            "\n", "- Target:", target,
+            "\n", "- Action:", action,
+            "\n", "- Simulate:", simulate,
+            "\n"
+        )
 
-    for root, dirs, files in os.walk(directory, followlinks=True):
-        pass
+        def linker(d, t):
+            for inside in os.listdir(d):
+                if os.path.isfile(t + "/" + inside) or os.path.islink(t + "/" + inside):
+                    print("File", t + "/" + inside, "already exists")
+                elif os.path.isdir(t + "/" + inside):
+                    linker(d + "/" + inside, t + "/" + inside)
+                else:
+                    if action == "stow":
+                        if simulate:
+                            print("Will link " + d + "/" + inside + " to " + t + "/")
+                        else:
+                            os.symlink(d + "/" + inside, t + "/" + inside)
+
+        if directory == ".":
+            for inside in os.listdir(directory):
+                for inside in os.listdir(directory):
+                    if os.path.isdir(inside) and not inside[0] == ".":
+                        linker(inside, target)
+        else:
+            linker(directory, target)
 
 
 def print_help():
@@ -67,6 +90,7 @@ def main(argv):
     target = ".."
     action = "stow"
     simulate = False
+    verbose = False
 
     for opt, arg in opts:
 
@@ -74,17 +98,20 @@ def main(argv):
             print_help()
             sys.exit()
 
-        elif opt in ("-v", "--verion"):
+        elif opt in ("-V", "--verion"):
             sys.exit()
 
         elif opt in ("-d", "--dir"):
             directory = arg
 
-        elif opt in ("-d", "--target"):
+        elif opt in ("-t", "--target"):
             target = arg
 
         elif opt in ("-n", "--no", "--simulate"):
             simulate = True
+
+        elif opt in ("-v", "--verbose"):
+            verbose = True
 
         elif opt in ("-D", "--delete"):
             action = "delete"
@@ -99,7 +126,8 @@ def main(argv):
         directory=directory,
         target=target,
         action=action,
-        simulate=simulate
+        simulate=simulate,
+        verbose=verbose
     )
 
 
