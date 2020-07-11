@@ -24,6 +24,7 @@ def unlink(f):
     else:
         print(f, "is not a link")
 
+# cur. directory - os.getcwd()
 
 def stow(directory=".", target="..", action="stow", simulate=False, verbose=False):
 
@@ -44,19 +45,45 @@ def stow(directory=".", target="..", action="stow", simulate=False, verbose=Fals
                 elif os.path.isdir(t + "/" + inside):
                     linker(d + "/" + inside, t + "/" + inside)
                 else:
-                    if action == "stow":
-                        if simulate:
-                            print("Will link " + d + "/" + inside + " to " + t + "/")
-                        else:
-                            os.symlink(d + "/" + inside, t + "/" + inside)
+                    if simulate:
+                        print("Will link " + d + "/" + inside + " to " + t + "/")
+                    else:
+                        os.symlink(
+                            os.path.abspath(d + "/" + inside),
+                            t + "/" + inside
+                        )
 
-        if directory == ".":
-            for inside in os.listdir(directory):
+        if action == "stow":
+            if directory == ".":
                 for inside in os.listdir(directory):
                     if os.path.isdir(inside) and not inside[0] == ".":
                         linker(inside, target)
-        else:
-            linker(directory, target)
+            else:
+                linker(directory, target)
+        elif action == "unstow":
+            """
+            for ...
+                check link
+            if link == as here
+                unlink
+            """
+            pass
+
+        elif action == "restow":
+            stow(
+                directory=directory,
+                target=target,
+                action="unstow",
+                simulate=simulate,
+                verbose=verbose
+            )
+            stow(
+                directory=directory,
+                target=target,
+                action="stow",
+                simulate=simulate,
+                verbose=verbose
+            )
 
 
 def print_help():
@@ -114,7 +141,7 @@ def main(argv):
             verbose = True
 
         elif opt in ("-D", "--delete"):
-            action = "delete"
+            action = "unstow"
 
         elif opt in ("-R", "--restow"):
             action = "restow"
