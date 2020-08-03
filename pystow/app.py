@@ -1,16 +1,13 @@
 #!/usr/bin/env python3
 
 
+# Copyright (c) 2020, XGQT
+# Licensed under the GNU GPL Version 3 License
+
+
 import os
 import sys
 import getopt
-
-
-def unlink(f):
-    if os.path.islink(f):
-        os.unlink(f)
-    else:
-        print(f, "is not a link")
 
 
 def stow(directory=".", target="..", action="stow", simulate=False, verbose=False):
@@ -90,14 +87,21 @@ def stow(directory=".", target="..", action="stow", simulate=False, verbose=Fals
 def print_help():
     print(
         """
--d DIR, --dir=DIR     Set stow dir to DIR (default is current dir)
--t DIR, --target=DIR  Set target to DIR (default is parent of stow dir)
--S, --stow            Stow the package names that follow this option
--D, --delete          Unstow the package names that follow this option
--R, --restow          Restow (like stow -D followed by stow -S)
--n, --no, --simulate  Do not actually make any filesystem changes
--V, --version         Show stow version number
--h, --help            Show this help
+Usage: pystow [OPTION]...
+pystow - GNU Stow in python
+
+Options:
+    -d DIR  --dir=DIR         Set stow dir to DIR (default is current dir)
+    -t DIR  --target=DIR      Set target to DIR (default is parent of stow dir)
+    -S      --stow            Stow the package names that follow this option
+    -D      --delete          Unstow the package names that follow this option
+    -R      --restow          Restow (like stow -D followed by stow -S)
+    -n      --no, --simulate  Do not actually make any filesystem changes
+    -V      --version         Show stow version number
+    -h      --help            Show this help
+
+Copyright (c) 2020, XGQT
+Licensed under the GNU GPL Version 3 License
 """
     )
 
@@ -114,7 +118,7 @@ def main(argv):
                 "delete",
                 "restow",
                 "stow",
-                "help"
+                "help",
                 "no",
                 "simulate",
                 "version",
