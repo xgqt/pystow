@@ -104,10 +104,12 @@ def main():
             for obj in objects:
 
                 if args.stow and not os.path.exists(wanted + "/" + obj):
+                    os.chdir(wanted)
+                    relpath = os.path.relpath(dirpath + "/" + obj)
                     if args.verbose:
-                        print(dirpath + "/" + obj, " -> ", wanted + "/" + obj)
+                        print(relpath, " -> ", obj)
                     if not args.simulate:
-                        os.symlink(dirpath + "/" + obj, wanted + "/" + obj)
+                        os.symlink(relpath, obj)
 
                 elif args.delete and os.path.islink(wanted + "/" + obj):
                     if args.verbose:

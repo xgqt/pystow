@@ -11,7 +11,7 @@ def readme():
 
 setup(
     name='pystow',
-    version='1.1',
+    version='1.2.0',
     description='GNU Stow rewritten in Python',
     author='XGQT',
     author_email='xgqt@protonmail.com',
