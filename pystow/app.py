@@ -1,179 +1,130 @@
 #!/usr/bin/env python3
 
 
-# Copyright (c) 2020, XGQT
-# Licensed under the GNU GPL Version 3 License
-
-
+from os import walk
+import argparse
 import os
-import sys
-import getopt
 
 
-def stow(directory=".", target="..", action="stow", simulate=False, verbose=False):
+parser = argparse.ArgumentParser(
+    description="GNU Stow rewritten in Python",
+    epilog="Copyright (c) 2020, XGQT (License: GNU GPL Version 3)"
+)
+group = parser.add_mutually_exclusive_group()
 
-    if verbose:
-        print(
-            "Options:",
-            "\n", "- Directory:", directory,
-            "\n", "- Target:", target,
-            "\n", "- Action:", action,
-            "\n", "- Simulate:", simulate,
-            "\n"
-        )
+parser.add_argument(
+    "-d", "--dir",
+    type=str, default=".",
+    help="Set stow directory (default is current dir)"
+)
+parser.add_argument(
+    "-t", "--target",
+    type=str, default="..",
+    help="Set target directory (default is parent of stow dir)"
+)
+parser.add_argument(
+    "-n", "--simulate",
+    action="store_true",
+    help="Do not actually make any filesystem changes"
+)
+parser.add_argument(
+    "-v", "--verbose",
+    action="store_true",
+    help="Be verbose"
+)
+group.add_argument(
+    "-S", "--stow",
+    action="store_true",
+    help="Stow the packages"
+)
+group.add_argument(
+    "-D", "--delete",
+    action="store_true",
+    help="Unstow the packages"
+)
+group.add_argument(
+    "-R", "--restow",
+    action="store_true",
+    help="Like stow -D followed by stow -S"
+)
+parser.add_argument(
+    "pkgs",
+    nargs="*",
+    type=str
+)
 
-    def linker(d, t):
-        for i in os.listdir(d):
-            if verbose:
-                print(d + "/" + i, t + "/" + i)
-            if os.path.isfile(t + "/" + i) or os.path.islink(t + "/" + i):
-                print("File", t + "/" + i, "already exists")
-            elif os.path.isdir(t + "/" + i):
-                linker(d + "/" + i, t + "/" + i)
-            else:
-                if simulate:
-                    print("Will link " + d + "/" + i + " to " + t + "/" + i)
-                else:
-                    os.symlink(
-                        os.path.abspath(d + "/" + i),
-                        t + "/" + i
-                    )
-
-    def unlinker(d, t):
-        for i in os.listdir(d):
-            if verbose:
-                print(d + "/" + i, t + "/" + i)
-            if os.path.islink(t + "/" + i):
-                if simulate:
-                    print("Will remove " + t + "/" + i)
-                else:
-                    os.unlink(t + "/" + i)
-            elif os.path.isfile(t + "/" + i):
-                print("File", t + "/" + i, "already exists")
-            elif os.path.isdir(t + "/" + i):
-                unlinker(d + "/" + i, t + "/" + i)
-
-    if action == "stow":
-        if directory == ".":
-            for inside in os.listdir(directory):
-                if os.path.isdir(inside) and not inside[0] == ".":
-                    linker(inside, target)
-        else:
-            linker(directory, target)
-    elif action == "unstow":
-        if directory == ".":
-            for inside in os.listdir(directory):
-                if os.path.isdir(inside) and not inside[0] == ".":
-                    unlinker(inside, target)
-        else:
-            unlinker(directory, target)
-    elif action == "restow":
-        stow(
-            directory=directory,
-            target=target,
-            action="unstow",
-            simulate=simulate,
-            verbose=verbose
-        )
-        stow(
-            directory=directory,
-            target=target,
-            action="stow",
-            simulate=simulate,
-            verbose=verbose
-        )
+args = parser.parse_args()
 
 
-def print_help():
-    print(
-        """
-Usage: pystow [OPTION]...
-pystow - GNU Stow in python
+# If 'pkgs' is empty: append all non-hidden dirs to it
+if args.pkgs == []:
+    p = []
+    for (dirpath, dirnames, filenames) in walk(args.dir):
+        for p_ in dirnames:
+            if not p_.startswith("."):
+                p.append(p_)
+        break
+    args.pkgs = p
 
-Options:
-    -d DIR  --dir=DIR         Set stow dir to DIR (default is current dir)
-    -t DIR  --target=DIR      Set target to DIR (default is parent of stow dir)
-    -S      --stow            Stow the package names that follow this option
-    -D      --delete          Unstow the package names that follow this option
-    -R      --restow          Restow (like stow -D followed by stow -S)
-    -n      --no, --simulate  Do not actually make any filesystem changes
-    -V      --version         Show stow version number
-    -h      --help            Show this help
+# Default action: stow
+if not args.stow and not args.delete and not args.restow:
+    args.stow = True
 
-Copyright (c) 2020, XGQT
-Licensed under the GNU GPL Version 3 License
-"""
-    )
+# Convert to absolute paths
+args.dir = os.path.abspath(args.dir)
+args.target = os.path.abspath(args.target)
 
 
-def main(argv):
+def main():
+    if args.verbose:
+        print("Running with options:")
+        print(" -", "Dir:", os.path.abspath(args.dir))
+        print(" -", "Target:", os.path.abspath(args.target))
+        print(" -", "Packages:", args.pkgs)
+        print(" -", "Simulate?", args.simulate)
+        print(" -", "Stow?", args.stow)
+        print(" -", "Delete?", args.delete)
+        print(" -", "Restow?", args.restow)
 
-    try:
-        opts, args = getopt.getopt(
-            argv,
-            "d:t:DRShnVv",
-            [
-                "dir=",
-                "target=",
-                "delete",
-                "restow",
-                "stow",
-                "help",
-                "no",
-                "simulate",
-                "version",
-                "verbose"
-            ]
-        )
-    except getopt.GetoptError:
-        print("Wrong combination of options or arguments")
-        print_help()
-        sys.exit(2)
+    for pkg in args.pkgs:
 
-    directory = "."
-    target = ".."
-    action = "stow"
-    simulate = False
-    verbose = False
+        if args.verbose:
+            print("Package:", pkg)
 
-    for opt, arg in opts:
+        for (dirpath, dirnames, filenames) in walk(args.dir + "/" + pkg):
 
-        if opt in ("-h", "--help"):
-            print_help()
-            sys.exit()
+            wanted = os.path.abspath(args.target) + dirpath.replace(os.path.abspath(args.dir + "/" + pkg), "")
+            if args.verbose:
+                print("Wanted:", wanted)
 
-        elif opt in ("-V", "--verion"):
-            sys.exit()
+            objects = dirnames + filenames
+            if args.verbose:
+                print("Objects:", objects)
 
-        elif opt in ("-d", "--dir"):
-            directory = arg
+            for obj in objects:
 
-        elif opt in ("-t", "--target"):
-            target = arg
+                if args.stow and not os.path.exists(wanted + "/" + obj):
+                    if args.verbose:
+                        print(dirpath + "/" + obj, " -> ", wanted + "/" + obj)
+                    if not args.simulate:
+                        os.symlink(dirpath + "/" + obj, wanted + "/" + obj)
 
-        elif opt in ("-n", "--no", "--simulate"):
-            simulate = True
+                elif args.delete and os.path.islink(wanted + "/" + obj):
+                    if args.verbose:
+                        print(dirpath + "/" + obj, " <> ", wanted + "/" + obj)
+                    if not args.simulate:
+                        os.unlink(wanted + "/" + obj)
 
-        elif opt in ("-v", "--verbose"):
-            verbose = True
-
-        elif opt in ("-D", "--delete"):
-            action = "unstow"
-
-        elif opt in ("-R", "--restow"):
-            action = "restow"
-
-        elif opt in ("-S", "--stow"):
-            action = "stow"
-
-    stow(
-        directory=directory,
-        target=target,
-        action=action,
-        simulate=simulate,
-        verbose=verbose
-    )
+                elif args.restow:
+                    args.stow = False
+                    args.delete = True
+                    args.restow = False
+                    main()
+                    args.stow = True
+                    args.delete = False
+                    args.restow = False
+                    main()
 
 
 if __name__ == "__main__":
-    main(argv=sys.argv[1:])
+    main()

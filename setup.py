@@ -11,8 +11,8 @@ def readme():
 
 setup(
     name='pystow',
-    version='1.0',
-    description='',
+    version='1.1',
+    description='GNU Stow rewritten in Python',
     author='XGQT',
     author_email='xgqt@protonmail.com',
     url='https://gitlab.com/xgqt/pystow',
@@ -26,7 +26,7 @@ setup(
     zip_safe=False,
     entry_points={
         'console_scripts': [
-            'pystow = pystow.cmdline:execute',
+            'pystow = pystow.app:main'
         ],
     },
     classifiers=[
