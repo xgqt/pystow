@@ -107,13 +107,13 @@ def main():
                     os.chdir(wanted)
                     relpath = os.path.relpath(dirpath + "/" + obj)
                     if args.verbose:
-                        print(relpath, " -> ", obj)
+                        print(relpath, "->", obj)
                     if not args.simulate:
                         os.symlink(relpath, obj)
 
                 elif args.delete and os.path.islink(wanted + "/" + obj):
                     if args.verbose:
-                        print(dirpath + "/" + obj, " <> ", wanted + "/" + obj)
+                        print(dirpath + "/" + obj, "<>", wanted + "/" + obj)
                     if not args.simulate:
                         os.unlink(wanted + "/" + obj)
 
