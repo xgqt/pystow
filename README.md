@@ -13,7 +13,7 @@ GNU Stow rewritten in python
 
 ## Runtime
 
-- >=python3.6
+- python3.6 or higher
 
 
 # Installation
