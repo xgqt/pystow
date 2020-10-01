@@ -9,7 +9,7 @@ GNU Stow rewritten in python
 
 - git (vcs)
 - pip
-- make
+- make (for user)
 
 ## Runtime
 
