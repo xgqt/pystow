@@ -78,28 +78,28 @@ args.target = os.path.abspath(args.target)
 def main():
     if args.verbose:
         print("Running with options:")
-        print(" -", "Dir:", os.path.abspath(args.dir))
-        print(" -", "Target:", os.path.abspath(args.target))
-        print(" -", "Packages:", args.pkgs)
-        print(" -", "Simulate?", args.simulate)
-        print(" -", "Stow?", args.stow)
-        print(" -", "Delete?", args.delete)
-        print(" -", "Restow?", args.restow)
+        print(" - Directory : {}".format(os.path.abspath(args.dir)))
+        print(" - Target    : {}".format(os.path.abspath(args.target)))
+        print(" - Packages  : {}".format(args.pkgs))
+        print(" - Simulate? : {}".format(args.simulate))
+        print(" - Stow?     : {}".format(args.stow))
+        print(" - Delete?   : {}".format(args.delete))
+        print(" - Restow?   : {}".format(args.restow))
 
     for pkg in args.pkgs:
 
         if args.verbose:
-            print("Package:", pkg)
+            print("Package : {}".format(pkg))
 
         for (dirpath, dirnames, filenames) in walk(args.dir + "/" + pkg):
 
             wanted = os.path.abspath(args.target) + dirpath.replace(os.path.abspath(args.dir + "/" + pkg), "")
             if args.verbose:
-                print("Wanted:", wanted)
+                print("Wanted : {}".format(wanted))
 
             objects = dirnames + filenames
             if args.verbose:
-                print("Objects:", objects)
+                print("Objects : {}".format(objects))
 
             for obj in objects:
 
@@ -107,13 +107,13 @@ def main():
                     os.chdir(wanted)
                     relpath = os.path.relpath(dirpath + "/" + obj)
                     if args.verbose:
-                        print(relpath, "->", obj)
+                        print("{} -> {}".format(relpath, obj))
                     if not args.simulate:
                         os.symlink(relpath, obj)
 
                 elif args.delete and os.path.islink(wanted + "/" + obj):
                     if args.verbose:
-                        print(dirpath + "/" + obj, "<>", wanted + "/" + obj)
+                        print("{}/{} <> {}/{}".format(dirpath, obj, wanted, obj))
                     if not args.simulate:
                         os.unlink(wanted + "/" + obj)
 
