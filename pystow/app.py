@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 
-from os import walk
 import argparse
 import os
 
@@ -59,7 +58,7 @@ args = parser.parse_args()
 # If 'pkgs' is empty: append all non-hidden dirs to it
 if args.pkgs == []:
     p = []
-    for (dirpath, dirnames, filenames) in walk(args.dir):
+    for (dirpath, dirnames, filenames) in os.walk(args.dir):
         for p_ in dirnames:
             if not p_.startswith("."):
                 p.append(p_)
@@ -91,9 +90,13 @@ def main():
         if args.verbose:
             print("Package : {}".format(pkg))
 
-        for (dirpath, dirnames, filenames) in walk(args.dir + "/" + pkg):
+        dir_pkg = os.path.join(args.dir, pkg)
+        for (dirpath, dirnames, filenames) in os.walk(dir_pkg):
 
-            wanted = os.path.abspath(args.target) + dirpath.replace(os.path.abspath(args.dir + "/" + pkg), "")
+            wanted = os.path.join(
+                os.path.abspath(args.target),
+                dirpath.replace(os.path.abspath(dir_pkg), "")
+            )
             if args.verbose:
                 print("Wanted : {}".format(wanted))
 
@@ -102,20 +105,23 @@ def main():
                 print("Objects : {}".format(objects))
 
             for obj in objects:
+                wanted_obj = os.path.join(wanted, obj)
 
-                if args.stow and not os.path.exists(wanted + "/" + obj):
+                if args.stow and os.path.exists(wanted_obj):
                     os.chdir(wanted)
-                    relpath = os.path.relpath(dirpath + "/" + obj)
+                    relpath = os.path.relpath(os.path.join(dirpath, obj))
                     if args.verbose:
                         print("{} -> {}".format(relpath, obj))
                     if not args.simulate:
                         os.symlink(relpath, obj)
 
-                elif args.delete and os.path.islink(wanted + "/" + obj):
+                elif args.delete and os.path.islink(wanted_obj):
                     if args.verbose:
-                        print("{}/{} <> {}/{}".format(dirpath, obj, wanted, obj))
+                        print("{}/{} <> {}/{}".format(
+                            dirpath, obj, wanted, obj
+                        ))
                     if not args.simulate:
-                        os.unlink(wanted + "/" + obj)
+                        os.unlink(wanted_obj)
 
                 elif args.restow:
                     args.stow = False
