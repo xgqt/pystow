@@ -93,10 +93,8 @@ def main():
         dir_pkg = os.path.join(args.dir, pkg)
         for (dirpath, dirnames, filenames) in os.walk(dir_pkg):
 
-            wanted = os.path.join(
-                os.path.abspath(args.target),
-                dirpath.replace(os.path.abspath(dir_pkg), "")
-            )
+            wanted = os.path.abspath(args.target) + dirpath.replace(os.path.abspath(dir_pkg), "")
+
             if args.verbose:
                 print("Wanted : {}".format(wanted))
 
@@ -107,7 +105,7 @@ def main():
             for obj in objects:
                 wanted_obj = os.path.join(wanted, obj)
 
-                if args.stow and os.path.exists(wanted_obj):
+                if args.stow and not os.path.exists(wanted_obj):
                     os.chdir(wanted)
                     relpath = os.path.relpath(os.path.join(dirpath, obj))
                     if args.verbose:
