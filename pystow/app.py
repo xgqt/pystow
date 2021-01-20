@@ -122,7 +122,7 @@ def main():
         dir_pkg = os.path.join(args.dir, pkg)
         for (dir_path, dir_names, file_names) in os.walk(dir_pkg):
 
-            wanted = os.path.abspath(args.target) + dir_path.replace(os.path.abspath(dir_pkg), "")
+            wanted = args.target + dir_path.replace(dir_pkg, "")
 
             if args.verbose:
                 print("Wanted : {}".format(wanted))
