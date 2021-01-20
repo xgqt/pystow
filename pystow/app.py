@@ -76,6 +76,19 @@ parser.add_argument(
 args = parser.parse_args()
 
 
+def print_options():
+    """Prnt arguments/options."""
+
+    print("Running with options:")
+    print(" - Directory : {}".format(os.path.abspath(args.dir)))
+    print(" - Target    : {}".format(os.path.abspath(args.target)))
+    print(" - Packages  : {}".format(args.pkgs))
+    print(" - Simulate? : {}".format(args.simulate))
+    print(" - Stow?     : {}".format(args.stow))
+    print(" - Delete?   : {}".format(args.delete))
+    print(" - Restow?   : {}".format(args.restow))
+
+
 # If 'pkgs' is empty: append all non-hidden dirs to it
 if args.pkgs == []:
     p = []
@@ -99,14 +112,7 @@ def main():
     """The main function."""
 
     if args.verbose:
-        print("Running with options:")
-        print(" - Directory : {}".format(os.path.abspath(args.dir)))
-        print(" - Target    : {}".format(os.path.abspath(args.target)))
-        print(" - Packages  : {}".format(args.pkgs))
-        print(" - Simulate? : {}".format(args.simulate))
-        print(" - Stow?     : {}".format(args.stow))
-        print(" - Delete?   : {}".format(args.delete))
-        print(" - Restow?   : {}".format(args.restow))
+        print_options()
 
     for pkg in args.pkgs:
 
