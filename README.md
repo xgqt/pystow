@@ -34,8 +34,8 @@ make install
 As root:
 
 ```sh
-emerge -1nv app-eselect/eselect-repository
-eselect repository enable myov
+emerge --autounmask --noreplace --oneshot app-eselect/eselect-repository
+eselect repository add myov git https://gitlab.com/xgqt/myov
 emaint sync -r myov
-emerge -av --autounmask app-admin/pystow
+emerge --autounmask --noreplace --verbose app-admin/pystow
 ```
