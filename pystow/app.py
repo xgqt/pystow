@@ -1,6 +1,27 @@
 #!/usr/bin/env python3
 
 
+"""
+# This file is part of pystow.
+
+# pystow is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# pystow is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with pystow.  If not, see <https://www.gnu.org/licenses/>.
+
+# Copyright (c) 2020-2021, Maciej Barć (xgqt@protonmail.com)
+# Licensed under the GNU GPL v3 License
+"""
+
+
 import argparse
 import os
 
@@ -75,6 +96,8 @@ args.target = os.path.abspath(args.target)
 
 
 def main():
+    """The main function."""
+
     if args.verbose:
         print("Running with options:")
         print(" - Directory : {}".format(os.path.abspath(args.dir)))
@@ -91,14 +114,14 @@ def main():
             print("Package : {}".format(pkg))
 
         dir_pkg = os.path.join(args.dir, pkg)
-        for (dirpath, dirnames, filenames) in os.walk(dir_pkg):
+        for (dir_path, dir_names, file_names) in os.walk(dir_pkg):
 
-            wanted = os.path.abspath(args.target) + dirpath.replace(os.path.abspath(dir_pkg), "")
+            wanted = os.path.abspath(args.target) + dir_path.replace(os.path.abspath(dir_pkg), "")
 
             if args.verbose:
                 print("Wanted : {}".format(wanted))
 
-            objects = dirnames + filenames
+            objects = dir_names + file_names
             if args.verbose:
                 print("Objects : {}".format(objects))
 
@@ -107,7 +130,7 @@ def main():
 
                 if args.stow and not os.path.exists(wanted_obj):
                     os.chdir(wanted)
-                    relpath = os.path.relpath(os.path.join(dirpath, obj))
+                    relpath = os.path.relpath(os.path.join(dir_path, obj))
                     if args.verbose:
                         print("{} -> {}".format(relpath, obj))
                     if not args.simulate:
@@ -116,7 +139,7 @@ def main():
                 elif args.delete and os.path.islink(wanted_obj):
                     if args.verbose:
                         print("{}/{} <> {}/{}".format(
-                            dirpath, obj, wanted, obj
+                            dir_path, obj, wanted, obj
                         ))
                     if not args.simulate:
                         os.unlink(wanted_obj)
