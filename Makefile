@@ -13,14 +13,16 @@
 # You should have received a copy of the GNU General Public License
 # along with pystow.  If not, see <https://www.gnu.org/licenses/>.
 
-# Copyright (c) 2020-2021, Maciej Barć (xgqt@protonmail.com)
+# Copyright (c) 2020-2021, Maciej Barć <xgqt@protonmail.com>
 # Licensed under the GNU GPL v3 License
 
 
-BIN = pystow
+BIN 	= pystow
+PYTHON	= python3
 
 
-.PHONY: all clean install uninstall distclean
+
+.PHONY: all clean dist install uninstall distclean
 
 
 all:
@@ -34,8 +36,12 @@ clean:
 	$(RM) -dr $(BIN)/__pycache__
 
 
+dist:
+	$(RM) MANIFEST
+	$(PYTHON) setup.py sdist
+
 install:
-	python setup.py -v install --user
+	$(PYTHON) setup.py -v install --user
 
 
 uninstall:
