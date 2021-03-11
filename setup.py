@@ -17,7 +17,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with pystow.  If not, see <https://www.gnu.org/licenses/>.
 
-Copyright (c) 2020-2021, Maciej Barć <xgqt@protonmail.com>
+Copyright (c) 2020-2021, Maciej Barć <xgqt@riseup.net>
 Licensed under the GNU GPL v3 License
 """
 
@@ -36,7 +36,7 @@ setup(
     version="1.2.1",
     description="GNU Stow rewritten in Python",
     author="XGQT",
-    author_email="xgqt@protonmail.com",
+    author_email="xgqt@riseup.net",
     url="https://gitlab.com/xgqt/pystow",
     long_description=readme(),
     long_description_content_type="text/markdown",
