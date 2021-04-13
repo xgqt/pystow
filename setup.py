@@ -35,7 +35,7 @@ setup(
     name="pystow",
     version="1.2.1",
     description="GNU Stow rewritten in Python",
-    author="XGQT",
+    author="Maciej Barć",
     author_email="xgqt@riseup.net",
     url="https://gitlab.com/xgqt/pystow",
     long_description=readme(),
