@@ -28,7 +28,7 @@ import os
 
 parser = argparse.ArgumentParser(
     description="GNU Stow rewritten in Python",
-    epilog="Copyright (c) 2020, XGQT (License: GNU GPL Version 3)"
+    epilog="Copyright (c) 2020-2021, Maciej Barć (License: GNU GPL Version 3)"
 )
 group = parser.add_mutually_exclusive_group()
 
