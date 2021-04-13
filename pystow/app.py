@@ -108,11 +108,10 @@ args.dir = os.path.abspath(args.dir)
 args.target = os.path.abspath(args.target)
 
 
-def main():
-    """The main function."""
-
-    if args.verbose:
-        print_options()
+def stow():
+    """
+    Stow or un-stow (delete).
+    """
 
     for pkg in args.pkgs:
 
@@ -150,15 +149,26 @@ def main():
                     if not args.simulate:
                         os.unlink(wanted_obj)
 
-                elif args.restow:
-                    args.stow = False
-                    args.delete = True
-                    args.restow = False
-                    main()
-                    args.stow = True
-                    args.delete = False
-                    args.restow = False
-                    main()
+
+def main():
+    """
+    The main function.
+    """
+
+    if args.verbose:
+        print_options()
+
+    if args.restow:
+        args.stow = False
+        args.delete = True
+        args.restow = False
+        stow()
+        args.stow = True
+        args.delete = False
+        args.restow = False
+        stow()
+    else:
+        stow()
 
 
 if __name__ == "__main__":
