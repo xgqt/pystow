@@ -32,7 +32,7 @@ def readme():
 
 setup(
     name="pystow",
-    version="1.2.1",
+    version="1.2.2",
     description="GNU Stow rewritten in Python",
     author="Maciej Barć",
     author_email="xgqt@riseup.net",
