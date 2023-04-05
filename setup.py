@@ -41,7 +41,6 @@ setup(
     long_description_content_type="text/markdown",
     license="GPL-3",
     keywords="stow",
-    python_requires=">=3.6.*",
     packages=["pystow"],
     include_package_data=True,
     zip_safe=False,
